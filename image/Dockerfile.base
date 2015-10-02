@@ -1,0 +1,29 @@
+FROM phusion/baseimage:0.9.17
+MAINTAINER Vincent Sheffer <vince.sheffer@bhnetwork.com>
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update
+RUN apt-get install -y software-properties-common
+RUN add-apt-repository ppa:chris-lea/node.js
+RUN apt-get update
+RUN apt-get install -y git-core wget libpcre3 libpcre3-dev libssl-dev build-essential unzip libreadline-dev libyaml-dev libmysqlclient-dev
+RUN apt-get install -y nodejs
+
+RUN useradd -ms /bin/bash passenger
+
+ADD . /home/passenger
+COPY ./rbenv /home/passenger/.rbenv
+RUN chown -R passenger:passenger /home/passenger
+
+USER passenger
+ENV HOME /home/passenger
+
+ENV PATH $HOME/.rbenv/plugins/ruby-build/bin:$HOME/.rbenv/shims:$HOME/.rbenv/bin:$PATH
+RUN echo $PATH
+RUN rbenv install 2.2.2
+RUN rbenv global 2.2.2
+RUN ruby -v
+RUN echo "gem: --no-ri --no-rdoc" > $HOME/.gemrc
+RUN gem install bundler
+RUN gem install rails -v 4.2.1
+RUN gem install passenger
+RUN passenger-config --root
