@@ -8,6 +8,7 @@ RUN /build/compile_nginx.sh
 RUN mkdir /etc/service/nginx
 COPY nginx-run /etc/service/nginx/run
 COPY nginx.conf /etc/nginx/nginx.conf
+COPY naxsi_core.rules /etc/nginx/naxsi_core.rules
 RUN rm -rf /etc/service/sshd
 #RUN update-rc.d nginx defaults
 #CMD ["/sbin/my_init"]
